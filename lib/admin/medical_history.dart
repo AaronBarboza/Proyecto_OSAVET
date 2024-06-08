@@ -1,59 +1,91 @@
 import 'package:flutter/material.dart';
 
-class MedicalHistoryScreen extends StatelessWidget {
+class MedicalHistoryScreen extends StatefulWidget {
+  @override
+  _MedicalHistoryScreenState createState() => _MedicalHistoryScreenState();
+}
+
+class _MedicalHistoryScreenState extends State<MedicalHistoryScreen> {
+  List<Map<String, String>> _medicalRecords = [
+    {"petName": "Lucas", "details": "Vacunación al día"},
+    {"petName": "Docky", "details": "Pendiente de desparasitación"},
+    // Agrega más registros médicos si es necesario
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Historial Médico"),
-      ),
-      backgroundColor: Colors.lightBlueAccent,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              "Historial Médico de Mascotas",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFFd0e0eb),
+                Color.fromARGB(255, 137, 161, 181),
+                Color(0xFFd0e0eb),
+              ],
             ),
-            SizedBox(height: 20),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    _buildMedicalRecord(
-                        petName: "Lucas",
-                        details: "Vacunacion al dia",
-                        onEdit: () {
-                          _editMedicalHistory(
-                              context, "Lucas", "Vacunacion al dia");
-                        },
-                        onDelete: () {
-                          _deleteMedicalHistory(context, "Lucas");
-                        }),
-                    _buildMedicalRecord(
-                        petName: "Docky",
-                        details: "Pendiente de desparacitacion",
-                        onEdit: () {
-                          _editMedicalHistory(
-                              context, "Docky", "Pendiente de desparacitacion");
-                        },
-                        onDelete: () {
-                          _deleteMedicalHistory(context, "Docky");
-                        }),
-                    // Agrega más registros médicos si es necesario
-                  ],
+          ),
+        ),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFd0e0eb),
+              Color.fromARGB(255, 137, 161, 181),
+              Color(0xFFd0e0eb),
+            ],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Historial Médico de Mascotas",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 20),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _medicalRecords.length,
+                  itemBuilder: (context, index) {
+                    final record = _medicalRecords[index];
+                    return _buildMedicalRecord(
+                      petName: record["petName"]!,
+                      details: record["details"]!,
+                      onEdit: () {
+                        _editMedicalHistory(
+                            context, record["petName"]!, record["details"]!);
+                      },
+                      onDelete: () {
+                        _deleteMedicalHistory(context, record["petName"]!);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _addMedicalHistory(context);
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
       ),
     );
   }
@@ -64,53 +96,104 @@ class MedicalHistoryScreen extends StatelessWidget {
     required VoidCallback onEdit,
     required VoidCallback onDelete,
   }) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Card(
+      elevation: 4.0,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            "Nombre de la mascota: $petName",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            "Detalles: $details",
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              TextButton(
-                onPressed: onEdit,
-                child: Text(
-                  "Editar",
-                  style: TextStyle(color: Colors.blue),
-                ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              "Nombre de la mascota: $petName",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
-              SizedBox(width: 8),
-              TextButton(
-                onPressed: onDelete,
-                child: Text(
-                  "Eliminar",
-                  style: TextStyle(color: Colors.red),
-                ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              "Detalles: $details",
+              style: TextStyle(
+                fontSize: 16,
               ),
-            ],
-          ),
-        ],
+            ),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                IconButton(
+                  onPressed: onEdit,
+                  icon: Icon(Icons.edit),
+                  color: Colors.blue,
+                ),
+                SizedBox(width: 8),
+                IconButton(
+                  onPressed: onDelete,
+                  icon: Icon(Icons.delete),
+                  color: Colors.red,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  void _addMedicalHistory(BuildContext context) {
+    TextEditingController nameController = TextEditingController();
+    TextEditingController detailsController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Agregar Historial Médico"),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: "Nombre de la mascota",
+                  ),
+                ),
+                SizedBox(height: 16),
+                TextField(
+                  controller: detailsController,
+                  decoration: InputDecoration(
+                    labelText: "Detalles",
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancelar"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _medicalRecords.add({
+                    "petName": nameController.text,
+                    "details": detailsController.text,
+                  });
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text("Agregar"),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -148,6 +231,11 @@ class MedicalHistoryScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
+                setState(() {
+                  final index = _medicalRecords
+                      .indexWhere((record) => record["petName"] == petName);
+                  _medicalRecords[index]["details"] = detailsController.text;
+                });
                 Navigator.of(context).pop();
               },
               child: Text("Guardar"),
@@ -175,7 +263,10 @@ class MedicalHistoryScreen extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                // Aquí puedes implementar la lógica para eliminar el historial médico
+                setState(() {
+                  _medicalRecords
+                      .removeWhere((record) => record["petName"] == petName);
+                });
                 Navigator.of(context).pop();
               },
               child: Text("Eliminar"),

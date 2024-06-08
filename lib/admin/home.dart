@@ -10,8 +10,36 @@ import 'pet_profile.dart';
 import 'calendar.dart';
 import '../login.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +161,9 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: Container(
+        
+        width: double
+            .infinity, // Agrega esta línea para hacer que el Container abarque todo el ancho
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -143,6 +174,35 @@ class HomeScreen extends StatelessWidget {
               Color(0xFFd0e0eb),
             ],
           ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 20),
+            const Text(
+              '¡Bienvenido!',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Aquí podrás gestionar tu aplicación.',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+              ),
+            ),
+            FadeTransition(
+              opacity: _animation,
+              child: const Image(
+                image: AssetImage('assets/admin_image.png'),
+                height: 400,
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -70,103 +70,117 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       appBar: AppBar(
         title: const Text('Gestión de Citas Veterinaria'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            TableCalendar(
-              focusedDay: _focusedDay,
-              firstDay: DateTime(2020),
-              lastDay: DateTime(2030),
-              calendarFormat: _calendarFormat,
-              selectedDayPredicate: (day) {
-                return isSameDay(_selectedDay, day);
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              },
-              onFormatChanged: (format) {
-                setState(() {
-                  _calendarFormat = format;
-                });
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _nameController,
-                      decoration:
-                          const InputDecoration(labelText: 'Nombre del dueño'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingrese el nombre del dueño';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      controller: _petNameController,
-                      decoration: const InputDecoration(
-                          labelText: 'Nombre de la mascota'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingrese el nombre de la mascota';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      controller: _phoneController,
-                      decoration: const InputDecoration(labelText: 'Teléfono'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor ingrese el teléfono';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextButton(
-                      onPressed: () => _selectTime(context),
-                      child: const Text(
-                        'Seleccionar Hora',
-                        style: TextStyle(color: Colors.blue),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFd0e0eb),
+              Color.fromARGB(255, 137, 161, 181),
+              Color(0xFFd0e0eb),
+            ],
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              TableCalendar(
+                focusedDay: _focusedDay,
+                firstDay: DateTime(2020),
+                lastDay: DateTime(2030),
+                calendarFormat: _calendarFormat,
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay;
+                  });
+                },
+                onFormatChanged: (format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                            labelText: 'Nombre del dueño'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor ingrese el nombre del dueño';
+                          }
+                          return null;
+                        },
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _saveAppointment,
-                      child: const Text('Guardar Cita'),
-                    ),
-                  ],
+                      TextFormField(
+                        controller: _petNameController,
+                        decoration: const InputDecoration(
+                            labelText: 'Nombre de la mascota'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor ingrese el nombre de la mascota';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        controller: _phoneController,
+                        decoration:
+                            const InputDecoration(labelText: 'Teléfono'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor ingrese el teléfono';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextButton(
+                        onPressed: () => _selectTime(context),
+                        child: const Text(
+                          'Seleccionar Hora',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _saveAppointment,
+                        child: const Text('Guardar Cita'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: _getAppointmentsForSelectedDay().map((appointment) {
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: ListTile(
-                      title: Text(
-                          '${appointment['name']} - ${appointment['petName']}'),
-                      subtitle: Text(
-                        'Tel: ${appointment['phone']} - ${DateTime.parse(appointment['date']!).toLocal().toIso8601String().split('T').first} a las ${appointment['time']}',
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: _getAppointmentsForSelectedDay().map((appointment) {
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: ListTile(
+                        title: Text(
+                            '${appointment['name']} - ${appointment['petName']}'),
+                        subtitle: Text(
+                          'Tel: ${appointment['phone']} - ${DateTime.parse(appointment['date']!).toLocal().toIso8601String().split('T').first} a las ${appointment['time']}',
+                        ),
                       ),
-                    ),
-                  );
-                }).toList(),
+                    );
+                  }).toList(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
